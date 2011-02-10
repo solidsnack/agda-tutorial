@@ -1,7 +1,7 @@
 
 module LogL where
 
-open import Data.List
+open import Data.List using (List)
 open import Data.String
 open import Data.Nat
 open import Data.Unit
@@ -26,20 +26,44 @@ data Message : Set where
   message : String → Message
 
 
-data Time/L : Set where
-  at : Time → Time/L
+data Interval (T : Set) : Set where 
+  ⟨⋯⟩   : Interval T
+  [_]   : T → Interval T
+  ⟨_⋯   : T → Interval T
+  ⋯_⟩   : T → Interval T
+  ⟨_⋯_⟩ : T → T → Interval T
+  [_⋯   : T → Interval T
+  ⋯_]   : T → Interval T
+  [_⋯_] : T → T → Interval T
+  ⟨_⋯_] : T → T → Interval T
+  [_⋯_⟩ : T → T → Interval T
+
+
+
+data String/Q : Set where
+  ^_    : String → String/Q
+  _$    : String → String/Q
+  *_*   : String → String/Q
+
+data Q : Set where
+  str/Q : String/Q → Q
+  time  : Interval Time → Q
+  str   : Interval String → Q
+  _∧_   : Q → Q → Q
+  _∨_   : Q → Q → Q
+  ¬_    : Q → Q
 
 data Rewrite/L : Set where
-  set   : MessageID → Message → Rewrite/L
-  unset : MessageID → Rewrite/L
+  ⟨⟩  : Rewrite/L
+  _←_ : MessageID → Message → Rewrite/L
+  _!  : MessageID → Rewrite/L
+  _&_ : Rewrite/L → Rewrite/L → Rewrite/L 
 
 data Append/L : Set → Set where
   append   : Log → Message → Append/L MessageID
-  search   : Log → Time/L → Append/L (List MessageID)
+  search   : Log → Q → Append/L (List MessageID)
   retrieve : Log → List MessageID → Append/L (Map MessageID Message)
   new      : Append/L Log
-  copy     : Log → Append/L Log
   update   : Log → Rewrite/L → Append/L Log
-
-data Delete/L : Set → Set where
-  delete : Log → Delete/L ⊤
+  delete   : Log → Append/L ⊤
+  --  Program composition, what will it mean?
