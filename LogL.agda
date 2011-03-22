@@ -67,3 +67,10 @@ data Append/L : Set → Set where
   update   : Log → Rewrite/L → Append/L Log
   delete   : Log → Append/L ⊤
   --  Program composition, what will it mean?
+  --  For now, it just means tupled execution. Tuples of Append/L t
+  --
+  --    (e₁ : Append/L MessageID, e₂ : Append/L Log, ...)
+  --
+  --  can be evaluated in bulk but separately from one another. There is
+  --  no variable binding.
+  --
