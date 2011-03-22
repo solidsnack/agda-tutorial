@@ -2,7 +2,10 @@
 module exercize_2-1 where
 
 open import Data.Nat
-open import Data.Fin
+open import Data.Nat.Properties
+open import Relation.Binary
+open DecTotalOrder Data.Nat.decTotalOrder using (trans; refl)
+open import Data.Fin using (Fin; suc; zero; fromℕ≤)
 
 data Vec (A : Set) : ℕ → Set where
   []  : Vec A zero
@@ -33,9 +36,16 @@ map : {n : ℕ}{A B : Set} → (A → B) → Vec A n → Vec B n
 map f []       = []
 map f (x ∷ xs) = f x ∷ map f xs
 
+n≤n+1 : {m : ℕ} → m ≤ suc m
+n≤n+1 = ≤-step refl
+
 upto : (n : ℕ) → Vec (Fin n) n
-upto zero = []
-upto (suc m) = zero ∷ map suc (upto m)
+upto n = upto' n refl
+ where
+  upto' : (m : ℕ) → (m ≤ n) → Vec (Fin n) m
+  upto' zero m≤n  = []
+  upto' (suc m') m≤n = fromℕ≤ m≤n ∷ upto' m' (trans n≤n+1 m≤n)
+
 
 transpose : ∀ {A n m} → Matrix A n m → Matrix A m n
 transpose {A} {n} {m} xss = map (λ m' → vecn m' $ xss) (upto m)
