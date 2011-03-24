@@ -20,15 +20,6 @@ tabulate {zero}  f = []
 tabulate {suc n} f = f zero ∷ tabulate (f ∘ suc)
 
 lem-!-tab : ∀ {A n} (f : Fin n → A) (i : Fin n) → tabulate f ! i ≡ f i
-lem-!-tab {_} {zero}  f ()
-lem-!-tab {_} {suc m} f zero = refl
---lem-!-tab {_} {suc m} f zero with tabulate f | f zero
---... | x ∷ _ | y = refl
-lem-!-tab {A} {suc m} f (suc h) with lem-!-tab {A} {suc m} f h
-... | refl = {!refl!}
--- lem-!-tab {_} {suc m} f i = refl
---  where
---   tabulated = tabulate f
---   p : tabulated ! i ≡ f i
---   p = refl
+lem-!-tab f zero = refl
+lem-!-tab f (suc h) = lem-!-tab (f ∘ suc) h
   
