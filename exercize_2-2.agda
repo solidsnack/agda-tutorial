@@ -22,4 +22,7 @@ tabulate {suc n} f = f zero ∷ tabulate (f ∘ suc)
 lem-!-tab : ∀ {A n} (f : Fin n → A) (i : Fin n) → tabulate f ! i ≡ f i
 lem-!-tab f zero = refl
 lem-!-tab f (suc h) = lem-!-tab (f ∘ suc) h
-  
+
+lem-tab-! : ∀ {A n} (xs : Vec A n) → tabulate (_!_ xs) ≡ xs
+lem-tab-! [] = refl
+lem-tab-! (x ∷ xs) rewrite lem-tab-! xs = refl
